@@ -1,0 +1,79 @@
+networks:
+  webnet:
+    driver: bridge
+
+volumes:
+  mysql_data:
+
+services:
+
+  # ─── TRAEFIK ────────────────────────────────────────────────────────────────
+  traefik:
+    image: traefik:v2.11          # Traefik uses the official image, no Dockerfile needed
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=webnet"
+      - "--entrypoints.web.address=:80"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+    ports:
+      - "0.0.0.0:80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - webnet
+
+  # ─── REACT FRONTEND ─────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend        # Docker looks for ./frontend/Dockerfile
+      dockerfile: Dockerfile     # explicit but optional — "Dockerfile" is the default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      # port 80 because the multi-stage Dockerfile ends with Nginx on :80
+    networks:
+      - webnet
+    depends_on:
+      - traefik
+      - api
+
+  # ─── NODE API ───────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: ./api             # Docker looks for ./api/Dockerfile
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=PathPrefix(`/api`)"
+      - "traefik.http.routers.api.entrypoints=web"
+      - "traefik.http.services.api.loadbalancer.server.port=3001"
+      # port 3001 matches the PORT variable in server.js
+    networks:
+      - webnet
+    depends_on:
+      - traefik
+      - db
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE:      tododb
+    volumes:
+      - mysql_data:/var/lib/mysql          # persist data between restarts
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql  # auto-run on first start
+    networks:
+      - webnet
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-psecret"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
