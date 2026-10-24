@@ -3,6 +3,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package.json .
 RUN npm install
+RUN yum install -y curl net-tools
 COPY . .
 RUN npm run build
 
