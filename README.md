@@ -86,8 +86,7 @@ This will:
 Once all services are running:
 
 - **Frontend**: http://localhost
-- **API**: http://localhost/api
-- **Traefik Dashboard**: http://localhost:8080
+- **Traefik Dashboard**: http://localhost:9090
 
 ### View Logs
 
