@@ -12,8 +12,6 @@ The app provides a clean, intuitive interface for managing your daily tasks with
 
 ✨ **User-Friendly Interface** - Clean and responsive React frontend for task management
 
-🔐 **Authentication** - JWT-based authentication for secure user sessions
-
 💾 **Data Persistence** - MySQL database for reliable task storage
 
 🐳 **Containerized** - Fully dockerized application for easy deployment
@@ -30,20 +28,40 @@ The app provides a clean, intuitive interface for managing your daily tasks with
 
 ```
 To-Do-NodeJs-Docker-App/
-├── api/                    # Express.js backend API
-│   ├── Dockerfile         # API container configuration
-│   ├── package.json       # Node.js dependencies
-│   ├── package-lock.json  # Locked API dependency versions
-│   └── server.js          # Main server file
-├── frontend/              # React frontend application
-│   ├── Dockerfile         # Frontend container (multi-stage build with Nginx)
-│   ├── package.json       # React dependencies
-│   ├── package-lock.json  # Locked frontend dependency versions
-│   └── src/               # React components and pages
-├── mysql/                 # MySQL database configuration
-│   └── init.sql          # Database initialization script
-├── docker-compose.yaml    # Orchestration configuration
-└── README.md             # Documentation
+├── api/                          # Express.js backend API service
+│   ├── .dockerignore            # Docker ignore rules for API
+│   ├── Dockerfile               # API container configuration
+│   └── code/                    # Application source code
+│       ├── db.js                # MySQL connection setup
+│       ├── server.js            # Main Express server entry point
+│       ├── package.json         # Backend dependencies and scripts
+│       ├── package-lock.json    # Locked backend dependency versions
+│       ├── middleware/          # Route middleware
+│       │   └── auth.js          # JWT authentication middleware
+│       └── routes/              # API endpoints
+│           ├── auth.js          # User authentication routes
+│           └── todos.js        # To-do CRUD routes
+├── frontend/                    # React frontend application
+│   ├── .dockerignore            # Docker ignore rules for frontend
+│   ├── Dockerfile               # Frontend container configuration
+│   └── code/                    # Frontend source code
+│       ├── index.html           # HTML entry file
+│       ├── package.json         # Frontend dependencies and scripts
+│       ├── package-lock.json    # Locked frontend dependency versions
+│       ├── vite.config.js       # Vite configuration
+│       └── src/                 # React application source
+│           ├── App.jsx          # Main App component
+│           ├── api.js           # Axios API client setup
+│           ├── main.jsx         # React entry point
+│           └── pages/           # App pages
+│               ├── Login.jsx    # Login page
+│               ├── Register.jsx # Registration page
+│               └── Todos.jsx   # To-do page
+├── mysql/                       # MySQL database setup
+│   └── init.sql                 # Database initialization script
+├── docker-compose.yaml          # Multi-container orchestration config
+├── README.md                    # Project documentation
+└── .git/                        # Git repository metadata
 ```
 
 ---
