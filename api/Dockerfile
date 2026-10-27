@@ -1,16 +1,11 @@
-# api/Dockerfile
+# One stage build and run
 FROM node:20-alpine
 WORKDIR /app
-COPY package.json .
-RUN npm install
-RUN yum install -y curl net-tools
-COPY . .
-EXPOSE 3001
-ENV DB_HOST=db
-ENV DB_PORT=3306
-ENV DB_USER=root
-ENV DB_PASSWORD=secret
-ENV DB_NAME=tododb
-ENV JWT_SECRET=changeme_use_a_long_random_string
-RUN yum install -y curl net-tools
+COPY ./code/package*.json .
+RUN npm ci
+COPY --chown=node:node ./code .
+USER node
+# security instruction in the Dockerfile that tells Docker 
+# "From this point, run commands and start the application as the node user instead of root."
+EXPOSE 3000
 CMD ["node", "server.js"]

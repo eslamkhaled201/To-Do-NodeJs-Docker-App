@@ -33,10 +33,12 @@ To-Do-NodeJs-Docker-App/
 ├── api/                    # Express.js backend API
 │   ├── Dockerfile         # API container configuration
 │   ├── package.json       # Node.js dependencies
+│   ├── package-lock.json  # Locked API dependency versions
 │   └── server.js          # Main server file
 ├── frontend/              # React frontend application
 │   ├── Dockerfile         # Frontend container (multi-stage build with Nginx)
 │   ├── package.json       # React dependencies
+│   ├── package-lock.json  # Locked frontend dependency versions
 │   └── src/               # React components and pages
 ├── mysql/                 # MySQL database configuration
 │   └── init.sql          # Database initialization script
@@ -85,8 +87,8 @@ This will:
 
 Once all services are running:
 
-- **Frontend**: http://localhost
-- **Traefik Dashboard**: http://localhost:9090
+- **Frontend**: http://localhost or http://external_IP
+- **Traefik Dashboard**: http://localhost:9090 or http://external_IP:9090
 
 ### View Logs
 

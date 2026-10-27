@@ -1,6 +1,7 @@
 networks:
   Public:
     driver: bridge
+  
   internal:
     driver: bridge
     internal: true
@@ -46,32 +47,46 @@ services:
     depends_on:
       - traefik
       - api
+    cap_drop:
+      - ALL # Removes all Linux capabilities from root user inside the container.
+    security_opt:
+      - no-new-privileges:true # Helps block privilege escalation attacks.
 
   # ─── NODE API ───────────────────────────────────────────────────────────────
   api:
     build:
       context: ./api             # Docker looks for ./api/Dockerfile
       dockerfile: Dockerfile
-    ports:
-      - "3001:3001"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.api.rule=PathPrefix(`/api`)"
       - "traefik.http.routers.api.entrypoints=web"
-      - "traefik.http.services.api.loadbalancer.server.port=3001"
-      # port 3001 matches the PORT variable in server.js
+      - "traefik.http.services.api.loadbalancer.server.port=3000"
+      # port 3000 matches the PORT variable in server.js
+    environment:
+       DB_HOST: db
+       DB_PORT: 3306
+       DB_USER: todouser
+       DB_PASSWORD: mypassword
+       DB_NAME: tododb
     networks:
       - internal
     depends_on:
       - traefik
       - db
+    cap_drop:
+      - ALL # Removes all Linux capabilities from root user inside the container.
+    security_opt:
+      - no-new-privileges:true # Prevents processes from gaining additional privileges after startup. Helps block privilege escalation attacks.
 
   db:
     image: mysql:8.0
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE:      tododb
+      MYSQL_USER: todouser
+      MYSQL_PASSWORD: mypassword
+      MYSQL_DATABASE: tododb
     volumes:
       - mysql_data:/var/lib/mysql          # persist data between restarts
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql  # auto-run on first start
@@ -82,3 +97,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    user: mysql  
+    cap_drop:
+      - ALL # Removes all Linux capabilities from the container.
+    security_opt:
+      - no-new-privileges:true 
+      # Prevents processes from gaining additional privileges after startup, 
+      # For example, if an attacker exploits MySQL and tries to use a SUID binary to become root, Linux will deny the privilege escalation.
