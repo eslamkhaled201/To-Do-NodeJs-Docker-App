@@ -37,10 +37,7 @@ To-Do-NodeJs-Docker-App/
 │       ├── package.json         # Backend dependencies and scripts
 │       ├── package-lock.json    # Locked backend dependency versions
 │       ├── middleware/          # Route middleware
-│       │   └── auth.js          # JWT authentication middleware
 │       └── routes/              # API endpoints
-│           ├── auth.js          # User authentication routes
-│           └── todos.js        # To-do CRUD routes
 ├── frontend/                    # React frontend application
 │   ├── .dockerignore            # Docker ignore rules for frontend
 │   ├── Dockerfile               # Frontend container configuration
@@ -50,13 +47,6 @@ To-Do-NodeJs-Docker-App/
 │       ├── package-lock.json    # Locked frontend dependency versions
 │       ├── vite.config.js       # Vite configuration
 │       └── src/                 # React application source
-│           ├── App.jsx          # Main App component
-│           ├── api.js           # Axios API client setup
-│           ├── main.jsx         # React entry point
-│           └── pages/           # App pages
-│               ├── Login.jsx    # Login page
-│               ├── Register.jsx # Registration page
-│               └── Todos.jsx   # To-do page
 ├── mysql/                       # MySQL database setup
 │   └── init.sql                 # Database initialization script
 ├── docker-compose.yaml          # Multi-container orchestration config
