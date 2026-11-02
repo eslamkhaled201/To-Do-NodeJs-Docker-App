@@ -9,11 +9,11 @@ pipeline {
         //        sh 'ls -la'
         //    }
         //}
-        //stage ('Test GitHub trigger'){
-        //    steps{
-        //        sh 'echo triggered change'
-        //    }
-        //}
+        stage ('Test GitHub trigger'){
+            steps{
+                sh 'echo triggered change'
+            }
+        }
         stage ('Run To DO Compose App'){
             steps{
                 sh 'docker compose up -d'
