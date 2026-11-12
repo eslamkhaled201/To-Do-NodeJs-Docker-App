@@ -14,10 +14,7 @@ pipeline {
                 sh 'echo backend install depandencies'
                 sh 'cd api/'
                 sh 'npm ci'
-            }
-            steps{
                 sh 'echo backend run tests'
-                sh 'cd api/'
                 sh 'npm run test'
             }
         }
