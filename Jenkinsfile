@@ -12,7 +12,7 @@ pipeline {
         stage ('Backend'){
             steps{
                 sh 'echo backend install depandencies'
-                sh 'cd api/'
+                sh 'cd api/code'
                 sh 'npm ci'
                 sh 'echo backend run tests'
                 sh 'npm run test'
