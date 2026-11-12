@@ -9,6 +9,18 @@ pipeline {
         //        sh 'ls -la'
         //    }
         //}
+        stage ('Backend'){
+            steps{
+                sh 'echo backend install depandencies'
+                sh 'cd api/'
+                sh 'npm ci'
+            }
+            steps{
+                sh 'echo backend run tests'
+                sh 'cd api/'
+                sh 'npm run test'
+            }
+        }
         stage ('Test GitHub trigger'){
             steps{
                 sh 'echo triggered change'
